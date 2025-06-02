@@ -10,7 +10,7 @@ from tqdm import tqdm
 import sys
 from functools import partial
 
-from models.model_classifier import AudioMLP
+import models.model_classifier as model_module
 from models.utils import EarlyStopping, Tee
 from dataset.dataset_ESC50 import ESC50
 import config
@@ -127,11 +127,8 @@ def fit_classifier():
 
 # build model from configuration.
 def make_model():
-    n = config.n_classes
-    model_constructor = config.model_constructor
-    print(model_constructor)
-    model = eval(model_constructor)
-    return model
+    return eval(f"model_module.{config.model_constructor}")
+
 
 
 if __name__ == "__main__":
@@ -196,10 +193,9 @@ if __name__ == "__main__":
             # Define a loss function and optimizer
             criterion = nn.CrossEntropyLoss().to(device)
 
-            optimizer = torch.optim.SGD(model.parameters(),
-                                        lr=config.lr,
-                                        momentum=0.9,
-                                        weight_decay=config.weight_decay)
+            optimizer = torch.optim.Adam(model.parameters(),
+                             lr=config.lr,
+                             weight_decay=config.weight_decay)
 
             scheduler = torch.optim.lr_scheduler.StepLR(optimizer,
                                                         step_size=config.step_size,
