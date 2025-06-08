@@ -3,7 +3,7 @@ import torch.nn as nn
 
 # Leichte Datenaugmentation für Spektrogramme
 class SpecMasking(nn.Module):
-    def __init__(self, freq_mask=24, time_mask=32):
+    def __init__(self, freq_mask=24, time_mask=48):        
         super().__init__()
         self.freq_mask = freq_mask
         self.time_mask = time_mask
@@ -58,15 +58,17 @@ class AudioCNN(nn.Module):
         ConvBlock(1, 32),
         ConvBlock(32, 64),
         ConvBlock(64, 128),
-        ConvBlock(128, 128)
+        ConvBlock(128, 128),         # ← zusätzlicher Layer
+        ConvBlock(128, 128, pool=False)  # ← ohne Pooling am Ende
+
 )
         self.attnpool = AttentionPool(128)
         self.fc = nn.Sequential(
-            nn.Linear(128, 128),
-            nn.ReLU(),
-            nn.Dropout(0.3),
-            nn.Linear(128, n_classes)
-        )
+        nn.Linear(128, 128),
+        nn.ReLU(),
+        nn.Dropout(0.5),   # ← statt 0.3
+        nn.Linear(128, n_classes)
+)
 
     def forward(self, x):
         x = self.specaug(x)

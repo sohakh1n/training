@@ -37,11 +37,12 @@ batch_size = 64     # schneller bei guter GPU
 #epochs = 1
 # early stopping after epochs with no improvement
 patience = 7
-lr = 1e-3
-weight_decay = 1e-3
+lr = 5e-4          # statt 1e-3
+weight_decay = 5e-4  # optional leicht reduzieren
+step_size = 4
+gamma = 0.75       # etwas konservativer decay
 warm_epochs = 10
-gamma = 0.8
-step_size = 5
+step_size = 4
 
 # ### TESTING
 # model checkpoints loaded for testing
