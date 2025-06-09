@@ -1,3 +1,4 @@
+import random
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -15,6 +16,10 @@ from models.utils import EarlyStopping, Tee
 from dataset.dataset_ESC50 import ESC50
 import config
 
+seed = 42
+torch.manual_seed(seed)
+random.seed(seed)
+np.random.seed(seed)
 
 # mean and std of train data for every fold
 global_stats = np.array([[-54.364834, 20.853344],
@@ -197,10 +202,8 @@ if __name__ == "__main__":
                               lr=config.lr,
                               weight_decay=config.weight_decay)
 
-            scheduler = torch.optim.lr_scheduler.StepLR(
-                            optimizer,
-                            step_size=config.step_size,
-                            gamma=config.gamma)
+            scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=config.epochs)
+
 
             # fit the model using only training and validation data, no testing data allowed here
             print()

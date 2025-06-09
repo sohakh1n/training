@@ -60,12 +60,12 @@ class AudioCNN(nn.Module):
             ConvBlock(128, 128),
             ConvBlock(128, 128, pool=False)
         )
-        self.dropout = nn.Dropout(0.3)  # ← NEU
+        self.dropout = nn.Dropout(0.2)  # ← NEU
         self.attnpool = AttentionPool(128)
         self.fc = nn.Sequential(
             nn.Linear(128, 128),
             nn.ReLU(),
-            nn.Dropout(0.5),
+            nn.Dropout(0.3),
             nn.Linear(128, n_classes)
         )
 
