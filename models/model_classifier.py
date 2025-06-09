@@ -49,29 +49,29 @@ class AttentionPool(nn.Module):
         attn_out, _ = self.attn(x, x, x)
         return self.norm(attn_out.mean(dim=1))  # [B, C]
 
-# Finales Audio-Klassifikationsnetz
 class AudioCNN(nn.Module):
     def __init__(self, n_mels=128, n_steps=431, n_classes=50):
         super().__init__()
         self.specaug = SpecMasking()
         self.encoder = nn.Sequential(
-        ConvBlock(1, 32),
-        ConvBlock(32, 64),
-        ConvBlock(64, 128),
-        ConvBlock(128, 128),         # ← zusätzlicher Layer
-        ConvBlock(128, 128, pool=False)  # ← ohne Pooling am Ende
-
-)
+            ConvBlock(1, 32),
+            ConvBlock(32, 64),
+            ConvBlock(64, 128),
+            ConvBlock(128, 128),
+            ConvBlock(128, 128, pool=False)
+        )
+        self.dropout = nn.Dropout(0.3)  # ← NEU
         self.attnpool = AttentionPool(128)
         self.fc = nn.Sequential(
-        nn.Linear(128, 128),
-        nn.ReLU(),
-        nn.Dropout(0.5),   # ← statt 0.3
-        nn.Linear(128, n_classes)
-)
+            nn.Linear(128, 128),
+            nn.ReLU(),
+            nn.Dropout(0.5),
+            nn.Linear(128, n_classes)
+        )
 
     def forward(self, x):
         x = self.specaug(x)
         x = self.encoder(x)
+        x = self.dropout(x)           # ← NEU
         x = self.attnpool(x)
         return self.fc(x)

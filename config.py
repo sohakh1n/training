@@ -32,11 +32,11 @@ num_workers = 0
 # num_workers = 6#16
 persistent_workers = True
 persistent_workers = False
-epochs = 50         # kürzer trainieren
+epochs = 75         # statt 50
 batch_size = 64     # schneller bei guter GPU
 #epochs = 1
 # early stopping after epochs with no improvement
-patience = 7
+patience = 10       # mehr Geduld bei EarlyStopping
 lr = 5e-4          # statt 1e-3
 weight_decay = 5e-4  # optional leicht reduzieren
 step_size = 4
